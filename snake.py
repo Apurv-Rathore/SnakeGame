@@ -1,7 +1,7 @@
 import tkinter as tk
 import time
 from random import randint
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk            #Image will allow to load an image , and ImageTk will allow to place on tkinter widget
 
 
 MOVE_INCREMENT = 20
@@ -9,13 +9,15 @@ MOVES_PER_SECOND = 15
 GAME_SPEED = 1000 // MOVES_PER_SECOND
 
 
-class Snake(tk.Canvas):
+class Snake(tk.Canvas):                             #our snake class is an canvas and it inherits from the canvas class
     def __init__(self):
         super().__init__(
             width=600, height=620, background="black", highlightthickness=0
         )
 
-        self.snake_positions = [(100, 100), (80, 100), (60, 100)]
+        self.snake_positions = [(100, 100), (80, 100), (60, 100)] #each tuple contains the x and y coordinate of one piece of the snake's body
+                                                                                                              #each of the elements in body is 20px wide
+                                                                                                              #snake_positions[0] is the head of the snake always
         self.food_position = self.set_new_food_position()
         self.direction = "Right"
 
@@ -24,11 +26,11 @@ class Snake(tk.Canvas):
         self.load_assets()
         self.create_objects()
 
-        self.bind_all("<Key>", self.on_key_press)
+        self.bind_all("<Key>", self.on_key_press)    #  <key> means any key pressed
 
-        self.pack()
+        self.pack()                                                             #pack is tkinter method of putting elements into another elements
 
-        self.after(GAME_SPEED, self.perform_actions)
+        self.after(GAME_SPEED, self.perform_actions)       #initially we have to perform the action
 
     def load_assets(self):
         try:
@@ -38,10 +40,10 @@ class Snake(tk.Canvas):
             self.food_image = Image.open("./assets/food.png")
             self.food = ImageTk.PhotoImage(self.food_image)
         except IOError as error:
-            root.destroy()
+            root.destroy()    #close the window
             raise
 
-    def create_objects(self):
+    def create_objects(self):    #function defined to place the image 
         self.create_text(
             35, 12, text=f"Score: {self.score}", tag="score", fill="#fff", font=10
         )
@@ -99,10 +101,10 @@ class Snake(tk.Canvas):
         elif self.direction == "Up":
             new_head_position = (head_x_position, head_y_position - MOVE_INCREMENT)
 
-        self.snake_positions = [new_head_position] + self.snake_positions[:-1]
+        self.snake_positions = [new_head_position] + self.snake_positions[:-1]#changing the head and chopping off the tail
 
         for segment, position in zip(self.find_withtag("snake"), self.snake_positions):
-            self.coords(segment, position)
+            self.coords(segment, position) #coords is a function in canvas which changes the coordinates from segment to position
 
     def on_key_press(self, e):
         new_direction = e.keysym
@@ -127,7 +129,7 @@ class Snake(tk.Canvas):
 
     def set_new_food_position(self):
         while True:
-            x_position = randint(1, 29) * MOVE_INCREMENT
+            x_position = randint(1, 29) * MOVE_INCREMENT  #we are seetting according to the dimensions of the window
             y_position = randint(3, 30) * MOVE_INCREMENT
             food_position = (x_position, y_position)
 
@@ -135,11 +137,16 @@ class Snake(tk.Canvas):
                 return food_position
 
 
-root = tk.Tk()
+root = tk.Tk()  #creating main application window
 root.title("Snake")
 root.resizable(False, False)
 root.tk.call("tk", "scaling", 4.0)
 
 board = Snake()
+#pack is tkinter method of putting elements into another elements
 
-root.mainloop()
+
+#canvas is a widget , it allows for the drawing of shapes on itself
+#it can be used to implement custom widget
+#canvas = Tk.canvas()
+root.mainloop() #running our application
